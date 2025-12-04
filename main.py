@@ -6,7 +6,7 @@ from typing import Annotated, Sequence, TypedDict, Literal
 from datetime import datetime
 import sys
 
-from langchain_litellm import ChatLiteLLM  # 使用新包
+from langchain_litellm import ChatLiteLLM  
 from langchain_core.messages import BaseMessage, ToolMessage, HumanMessage, AIMessage, SystemMessage
 from langgraph.graph.message import add_messages
 from langchain_core.tools import tool
@@ -37,7 +37,6 @@ if not os.getenv("NEBIUS_API_KEY"):
 geolocator = Nominatim(user_agent="advanced-agent-v1")
 
 
-# 工具 1: 天气查询
 class SearchInput(BaseModel):
     location: str = Field(description="The name of the city, e.g. San Francisco, Berlin")
     date: str = Field(description="The date for the weather forecast in yyyy-mm-dd format")
@@ -118,7 +117,6 @@ def call_tool(state: AgentState):
 
 
 def call_model(state: AgentState, config: RunnableConfig):
-    # 获取当前日期
     current_date = datetime.now().strftime("%Y-%m-%d")
 
     system_prompt = SystemMessage(
@@ -127,7 +125,6 @@ def call_model(state: AgentState, config: RunnableConfig):
 
     messages_to_send = [system_prompt] + list(state["messages"])
 
-    # 显示思考中的动画
     with console.status("[bold green]🤖 AI is thinking...", spinner="dots"):
         response = model.invoke(messages_to_send, config)
 
@@ -187,4 +184,5 @@ if __name__ == "__main__":
                     Panel(Markdown(final_response), title="[bold blue]AI Response[/bold blue]", border_style="green"))
 
         except Exception as e:
+
             console.print_exception()
