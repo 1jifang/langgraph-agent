@@ -13,7 +13,6 @@ from langgraph.graph.message import add_messages
 from langchain_core.tools import tool
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, END
-# from langgraph.checkpoint.memory import MemorySaver
 from langgraph.checkpoint.sqlite import SqliteSaver
 from pydantic import BaseModel, Field
 from geopy.geocoders import Nominatim
@@ -36,8 +35,6 @@ if not os.getenv("NEBIUS_API_KEY"):
 geolocator = Nominatim(user_agent="advanced-agent-v1")
 
 
-# --- 工具定义 (已修复) ---
-
 class SearchInput(BaseModel):
     location: str = Field(description="The name of the city, e.g. San Francisco, Berlin")
     date: str = Field(description="The date for the weather forecast in yyyy-mm-dd format")
@@ -48,7 +45,6 @@ def get_weather_forecast(location: str, date: str):
     Get the weather forecast for a specific location and date.
     Returns temperature data in Celsius.
     """
-    # ^^^ 必须加上这一段 Docstring，否则 LangChain 会报错 ^^^
     try:
         loc = geolocator.geocode(location)
         if loc:
@@ -224,3 +220,4 @@ if __name__ == "__main__":
         except Exception as e:
             console.print_exception()
             time.sleep(1)
+
